@@ -211,7 +211,7 @@ it('isLoading is true while waiting for cake data ', async () => {
 Used to perform instructions before or after a test. Refer to https://jestjs.io/docs/setup-teardown for more details.
 
 # SpyOn
-Used for mocking and accessing unaccesible component?
+Used for mocking and accessing unaccesible component or component that not "stable"
 For this example we will use the window as an example
 
 Suppose we have the code below:
@@ -231,6 +231,17 @@ test('Tests the alertPeople function', ()=>{
 }
 ```
 
+Example with unstable component
+```
+function randomBetween(min , max){
+    return Math.floor(Math.random() * (max-min +  1) + min)
+}
+
+jest.spyOn(Math, 'random').mockReturnValue(0);
+test('randomBetween function should return 3 if math.random is 3', ()=>{
+    expect(randomBetween(3,5)).toEqual(3);
+})
+```
 
 
 
