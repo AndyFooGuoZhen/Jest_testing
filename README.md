@@ -207,6 +207,30 @@ it('isLoading is true while waiting for cake data ', async () => {
 });
 ```
 
+# beforeEach, afterEach, beforeAll, afterAll
+Used to perform instructions before or after a test. Refer to https://jestjs.io/docs/setup-teardown for more details.
+
+# SpyOn
+Used for mocking and accessing unaccesible component?
+For this example we will use the window as an example
+
+Suppose we have the code below:
+```
+function alertPeople(input){
+    window.alert("Warning " + input);
+}
+```
+
+In tests, the window may not be accesible. To test this function, we can use the spy on function.
+```
+test('Tests the alertPeople function', ()=>{
+    alertPeople("Andy");
+    spyOn(window, 'alert');
+    expect(window.alert).toHaveBeenCalled();
+    expect(window.alert).toHaveBeenCalledWith("Warning Andy");
+}
+```
+
 
 
 
