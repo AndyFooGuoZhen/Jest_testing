@@ -124,6 +124,110 @@ In the previous example we mock the imported axios library, if we want to give t
 jest.mocked(axios).get.mockResolvedValue(resp);
 ```
 
+# Important notes on mocking
+Suppose we have file A , B and C. We want to test exported function in file A. We can only mock imported function/components into file A. 
+
+If we have imported a function (call this F1) in A from B that uses another imported function (F2)  from C, we can only mock function F1. 
+
+File A
+```
+import F1 from B;
+
+function A(){
+     F1();
+}
+```
+
+File B
+```
+import F2 from C;
+function B(){
+    F2;
+}
+```
+
+Testing file
+```
+# Code to test function A
+mock F1 // works
+mock F2 // fails
+```
+
+Another case where that mocking would be impossible is dual exports of function in the same file that are dependant on each other.
+
+For more details refer to https://stackoverflow.com/questions/51269431/jest-mock-inner-function.
+
+## Real example:
+
+wordPrinterHelper.js (our supposed file A)
+```
+const printNumberClone = require('./numberPrinterHelperClone')
+
+function printWord(input){
+    printNumberLocal(10);
+    printNumberClone(20);
+    return input;
+}
+
+function printNumberLocal(input){
+    console.log(input)
+}
+
+module.exports = { printWord , printNumberLocal };
+```
+
+numberPrinterHelperClone.js (our supposed file B)
+```
+const childPrinter = require("./childPrinter");
+
+function printNumberClone(input){
+    console.log(input)
+    childPrinter("hello");
+}
+
+module.exports = printNumberClone;
+```
+
+childPrinter.js (our suuposed file C)
+```
+function childPrinter(input){
+    console.log(input);
+}
+
+module.exports = childPrinter;
+
+```
+
+Testfile
+```
+const {printWord, printNumberLocal} = require('./wordPrinterHelper');
+const printNumberClone = require('./numberPrinterHelperClone');
+const childPrinter = require('./childPrinter');
+
+jest.mock('./numberPrinterHelperClone')     // mock the imported module into wordPrinterHelper.js
+jest.mock('./childPrinter')                 //fails
+test('printStuff test', ()=>{
+    printWord("bye");
+
+    //test wont work, because printNumberLocal technically not called 
+    expect(printNumberLocal).toHaveBeenCalledWith(10); 
+    
+    //works
+    expect(printNumberClone).toHaveBeenCalledWith(20); 
+
+    // wont work, childPrinter out of "module export range"
+    expect(childPrinter).toHaveBeenCalledWith("hello"); 
+})
+
+```
+
+
+## Lesson
+- We can only test exported functions and functions used in it that are imported from other modules (only 1 layer of import supported).
+- When we have a exported function dependant on another exported function  , we can only test both functions seperately.
+
+
+
 # Practical Example 1 (when getCake manages to get cake)
 
 cakeService.ts
