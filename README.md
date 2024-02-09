@@ -161,7 +161,7 @@ In this example , we are testing the getCake function, we use chance to give ran
  const json = await result.json();
 ```
 
-# Practical example 2  ( When getCake fails to getCake() )
+# Practical example 2  ( When getCake fails to get cake )
 
 cakeTest.ts
 ```
