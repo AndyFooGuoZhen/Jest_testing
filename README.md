@@ -191,7 +191,7 @@ it('isLoading is true while waiting for cake data ', async () => {
     expect(cakeStore.cake).toEqual([]); // Since promise is not yet resolved, no state change
     expect(cakeStore.isLoading).toEqual(true);
 
-    await cakePromise() // Resolce cakePromise, indicating that cake data arrived
+    await cakePromise() // Resolve cakePromise, indicating that cake data arrived
     expect(cakeStore.cake).toEqual(fetchJson); // axios resolves to json : jsonMock --> then await result.json() resolves to fetchJson
     expect(cakeStore.isLoading).toEqual(false);
 });
