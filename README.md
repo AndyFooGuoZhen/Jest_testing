@@ -177,6 +177,27 @@ it('fails to get cake, should not set cake', async () => {
 });
 ```
 
+# Practical example 3 ( When getCake is loading, isLoading is true)
+```
+it('isLoading is true while waiting for cake data ', async () => {
+    const cakeId = chance.guid();
+    const fetchJson = {
+        cake: chance.n(chance.guid, chance.d6())     // this returns a random array with random size from 0 - 6
+    };
+    const jsonMock = jest.fn().mockResolvedValue(fetchJson);       //create mock function that returns a promise that resolves to fetchjson
+    global.fetch = jest.fn().mockResolvedValue({json: jsonMock});  // create mock function that returns a promise that resolves to json : jsonMock
+   
+    let cakePromise =  getCake(cakeId); 
+    expect(cakeStore.cake).toEqual([]); // Since promise is not yet resolved, no state change
+    expect(cakeStore.isLoading).toEqual(true);
+
+    await cakePromise() // Resolce cakePromise, indicating that cake data arrived
+    expect(cakeStore.cake).toEqual(fetchJson); // axios resolves to json : jsonMock --> then await result.json() resolves to fetchJson
+    expect(cakeStore.isLoading).toEqual(false);
+});
+```
+
+
 
 
 
