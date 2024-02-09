@@ -114,4 +114,57 @@ const resp ={"data":
 });
 ```
 
+# Practical Exanmple 1
+
+cakeService.ts
+```
+Assume initial state of cakeStore = { cake : [], isLoading : false }
+
+export async function getCake(cakeId: string): Promise<void> {
+    setIsLoading(true);
+
+    try {
+        const result = await fetch(`/cake/${cakeId}/`);
+        const json = await result.json();
+
+        setCake(json);
+    } catch {
+        // Do nothing if we catch an error here for now
+    }
+    setIsLoading(false);
+}
+
+```
+
+cakeTest.ts
+```
+it('should get cake and store cake', async () => {
+    const cakeId = chance.guid();
+    const fetchJson = {
+        cake: chance.n(chance.guid, chance.d6())     // this returns a random array with random size from 0 - 6
+    };
+    const jsonMock = jest.fn().mockResolvedValue(fetchJson);       //create mock function that returns a promise that resolves to fetchjson
+    global.fetch = jest.fn().mockResolvedValue({json: jsonMock});  // create mock function that returns a promise that resolves to json : jsonMock
+   
+    await getCake(cakeId); 
+
+    expect(cakeStore.cake).toEqual(fetchJson); // axios resolves to json : jsonMock --> then await result.json() resolves to fetchJson
+    expect(cakeStore.isLoading).toEqual(false);
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(fetch).toHaveBeenCalledWith(`/cake/${cakeId}/`);
+    expect(jsonMock).toHaveBeenCalledTimes(1);
+    expect(jsonMock).toHaveBeenCalledWith();
+});
+```
+
+In this example , we are testing the getCake function, we use chance to give random values. Notice that we create a jsonMock to be a function that returns a promise that returns fetchJson when it is resolved. This is created to then this line:
+```
+ const json = await result.json();
+```
+
+
+
+
+
+
 
