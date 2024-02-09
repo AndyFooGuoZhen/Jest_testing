@@ -114,7 +114,7 @@ const resp ={"data":
 });
 ```
 
-# Practical Exanmple 1
+# Practical Example 1 (when getCake manages to get cake)
 
 cakeService.ts
 ```
@@ -147,7 +147,6 @@ it('should get cake and store cake', async () => {
     global.fetch = jest.fn().mockResolvedValue({json: jsonMock});  // create mock function that returns a promise that resolves to json : jsonMock
    
     await getCake(cakeId); 
-
     expect(cakeStore.cake).toEqual(fetchJson); // axios resolves to json : jsonMock --> then await result.json() resolves to fetchJson
     expect(cakeStore.isLoading).toEqual(false);
     expect(fetch).toHaveBeenCalledTimes(1);
@@ -162,6 +161,21 @@ In this example , we are testing the getCake function, we use chance to give ran
  const json = await result.json();
 ```
 
+# Practical example 2  ( When getCake fails to getCake() )
+
+cakeTest.ts
+```
+it('should get cake and store cake', async () => {
+    const cakeId = chance.guid();
+    global.fetch = jest.fn().mockRejectedValue(new Error());  // create mock function that returns a promise that rejects to an error
+   
+    await getCake(cakeId); 
+    expect(cakeStore.cake).toEqual([]); // axios rejects to error --> getCake catches the error and wont update state
+    expect(cakeStore.isLoading).toEqual(false);
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(fetch).toHaveBeenCalledWith(`/cake/${cakeId}/`);
+});
+```
 
 
 
