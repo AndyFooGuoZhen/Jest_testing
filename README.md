@@ -72,3 +72,46 @@ test('should resolve to peanut butter', async ()=>{
     expect(p).toBe('peanut butter');
 })
 ```
+
+# Mocking Functions
+```
+test('mock function test', ()=>{
+    const mockFunction = jest.fn(x=>42+x);
+    expect(mockFunction(2)).toBe(44);
+    expect(mockFunction).toHaveBeenCalledWith(2);
+})
+```
+# Mocking return values
+```
+test('mock return value test', ()=>{
+    const mockFunction = jest.fn();
+    mockFunction.mockReturnValueOnce(10);
+    expect(mockFunction()).toBe(10);
+})
+```
+
+# Mocking API Calls ***
+```
+async function getUser(){
+    const result = await axios.get('https://jsonplaceholder.typicode.com/todos/1');
+    return result.data.userId;
+}
+
+jest.mock('axios');
+test('should fetch users 2',  () => {
+   
+
+const resp ={"data":
+                {
+                    "userId": 1,
+                    "id": 1,
+                    "title": "delectus aut autem",
+                    "completed": false
+                 }
+            };
+    axios.get.mockResolvedValue(resp);
+    expect(getUser()).resolves.toEqual(1);
+});
+```
+
+
