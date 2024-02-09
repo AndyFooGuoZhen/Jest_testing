@@ -73,7 +73,9 @@ test('should resolve to peanut butter', async ()=>{
 })
 ```
 
-# Mocking Functions
+# Mocking 
+
+## Mocking functions
 ```
 test('mock function test', ()=>{
     const mockFunction = jest.fn(x=>42+x);
@@ -81,7 +83,7 @@ test('mock function test', ()=>{
     expect(mockFunction).toHaveBeenCalledWith(2);
 })
 ```
-# Mocking return values
+## Mocking return values
 ```
 test('mock return value test', ()=>{
     const mockFunction = jest.fn();
@@ -90,7 +92,7 @@ test('mock return value test', ()=>{
 })
 ```
 
-# Mocking API Calls ***
+## Mocking API Calls ***
 ```
 async function getUser(){
     const result = await axios.get('https://jsonplaceholder.typicode.com/todos/1');
@@ -112,6 +114,14 @@ const resp ={"data":
     axios.get.mockResolvedValue(resp);
     expect(getUser()).resolves.toEqual(1);
 });
+```
+## Mock vs Mocked
+Mock : Action of actually mocking somethng
+mocked: Used for typing purposes
+
+In the previous example we mock the imported axios library, if we want to give the fake axios a type, we can do :
+```
+jest.mocked(axios).get.mockResolvedValue(resp);
 ```
 
 # Practical Example 1 (when getCake manages to get cake)
