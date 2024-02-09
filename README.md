@@ -165,7 +165,7 @@ In this example , we are testing the getCake function, we use chance to give ran
 
 cakeTest.ts
 ```
-it('should get cake and store cake', async () => {
+it('fails to get cake, should not set cake', async () => {
     const cakeId = chance.guid();
     global.fetch = jest.fn().mockRejectedValue(new Error());  // create mock function that returns a promise that rejects to an error
    
